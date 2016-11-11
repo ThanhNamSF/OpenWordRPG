@@ -8,6 +8,17 @@ public class LootChest : MonoBehaviour
 	public int MaxItems;
 	int ItemCount;
 	List<Item> Items = new List<Item> ();
+
+	public List<Item> MyItem {
+		get {
+			return Items;
+		}
+	}
+
+	public SerilizableChest SChest;
+
+	public int ID;
+
 	private Renderer rd;
 
 	public float Distance;
@@ -17,11 +28,7 @@ public class LootChest : MonoBehaviour
 	Color DefaultColor;
 	bool Selected;
 
-	public List<Item> MyItem {
-		get {
-			return Items;
-		}
-	}
+
 
 	// Use this for initialization
 	void Start ()
@@ -33,6 +40,8 @@ public class LootChest : MonoBehaviour
 			Items.Add (GameManager.Instance.AllItem [r]);
 		}
 		DefaultColor = rd.material.color;
+		SChest = new SerilizableChest (MyItem, ID);
+		SaveManager.Instance.chests.Add (SChest);
 	}
 	
 	// Update is called once per frame
@@ -76,9 +85,37 @@ public class LootChest : MonoBehaviour
 		Selected = false;
 		GameManager.Instance.SelectedChest = null;
 	}
+}
 
-	void OnGUI ()
+[System.Serializable]
+public class SerilizableChest
+{
+
+	public SerilizableChest (List<Item> items, int id)
 	{
-
+		MyItem = items;
+		ID = id;
 	}
+
+	[System.NonSerialized]
+	List<Item> Items = new List<Item> ();
+
+	public List<Item> MyItem {
+		get {
+			return Items;
+		}
+		set {
+			Items = value;
+			_MyItemString.Clear ();
+			foreach (Item i in MyItem) {
+				Debug.Log (i.Name);
+				_MyItemString.Add (i.Name);
+			}
+
+		}
+	}
+
+	List<string> _MyItemString = new List<string> ();
+
+	public int ID;
 }

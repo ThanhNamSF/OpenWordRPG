@@ -110,7 +110,7 @@ public class Character
 public class Item
 {
 	public string Name;
-	public Texture Icon;
+	public Texture2D Icon;
 	public bool Selectable;
 	public ItemInstance InstancePrefab;
 }

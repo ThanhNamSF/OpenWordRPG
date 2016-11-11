@@ -40,6 +40,13 @@ public class GUIManager : MonoBehaviour
 		if (GameManager.Instance.SelectedChest != null) {
 			ChestRect = GUI.Window (_chestID, ChestRect, ChestWindow, "Chest");
 		}
+		if (GameManager.Instance.currentCharacter.Instance.InHand != null)
+			GUI.Box (new Rect (Screen.width - Screen.width / 7.5f, 0f, Screen.width / 7.5f, Screen.height / 8.4f), new GUIContent ("Selected Item: \n " + GameManager.Instance.currentCharacter.Instance.InHand.Name));
+		else
+			GUI.Box (new Rect (Screen.width - Screen.width / 7.5f, 0f, Screen.width / 7.5f, Screen.height / 8.4f), new GUIContent ("Selected Item: \n None"));
+		if (GUI.Button (new Rect (0, 0, 128, 128), "Save")) {
+			SaveManager.Instance.Save ();
+		}
 	}
 
 	void InventoryWindow (int id)
@@ -50,8 +57,17 @@ public class GUIManager : MonoBehaviour
 			for (int y = 0; y < InventoryRows; y++) {
 				if (c < GameManager.Instance.currentCharacter.Instance.Inventory.Count) {
 					if (GUI.Button (new Rect (ButtonOffset + (ButtonWidth * x), ButtonOffset + (ButtonHeight * y), ButtonWidth, ButtonHeight), GameManager.Instance.currentCharacter.Instance.Inventory [cu].Name)) {
-						if (GameManager.Instance.currentCharacter.Instance.Inventory [cu].Selectable) {
-							GameManager.Instance.currentCharacter.Instance.InHand = GameManager.Instance.currentCharacter.Instance.Inventory [cu];
+						if (Event.current.button == 0) {
+							if (GameManager.Instance.currentCharacter.Instance.Inventory [cu].Selectable) {
+								GameManager.Instance.currentCharacter.Instance.InHand = GameManager.Instance.currentCharacter.Instance.Inventory [cu];
+							}
+						} else if (Event.current.button == 1) {
+							if (GameManager.Instance.SelectedChest != null) {
+								GameManager.Instance.SelectedChest.MyItem.Add (GameManager.Instance.currentCharacter.Instance.Inventory [cu]);
+								if (GameManager.Instance.currentCharacter.Instance.InHand == GameManager.Instance.currentCharacter.Instance.Inventory [cu])
+									GameManager.Instance.currentCharacter.Instance.InHand = null;
+								GameManager.Instance.currentCharacter.Instance.Inventory.Remove (GameManager.Instance.currentCharacter.Instance.Inventory [cu]);
+							}
 						}
 					}
 					cu++;

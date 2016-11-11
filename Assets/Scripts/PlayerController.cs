@@ -32,8 +32,21 @@ public class PlayerController : MonoBehaviour
 		set {
 			_InHand = value;
 			Destroy (InHandInstance);
-			InHandInstance = Instantiate (value.InstancePrefab.gameObject, Hand.position, Hand.rotation) as GameObject;
-			InHandInstance.transform.parent = Hand;
+			Debug.Log ("fff");
+			if (value != null) {
+				InHandInstance = Instantiate (value.InstancePrefab.gameObject, Hand.position, Hand.rotation) as GameObject;
+				InHandInstance.transform.parent = Hand;
+			}
+
+			if (GameManager.Instance.Characters.IndexOf (localCharacter) == 0) {
+				SaveManager.Instance.p1_Hand = InHand;
+			}
+			if (GameManager.Instance.Characters.IndexOf (localCharacter) == 1) {
+				SaveManager.Instance.p2_Hand = InHand;
+			}
+			if (GameManager.Instance.Characters.IndexOf (localCharacter) == 2) {
+				SaveManager.Instance.p3_Hand = InHand;
+			}
 		}
 	}
 
@@ -44,6 +57,15 @@ public class PlayerController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		if (GameManager.Instance.Characters.IndexOf (localCharacter) == 0) {
+			SaveManager.Instance.p1_Inventory = Inventory;
+		}
+		if (GameManager.Instance.Characters.IndexOf (localCharacter) == 1) {
+			SaveManager.Instance.p2_Inventory = Inventory;
+		}
+		if (GameManager.Instance.Characters.IndexOf (localCharacter) == 2) {
+			SaveManager.Instance.p3_Inventory = Inventory;
+		}
 	
 	}
 	
