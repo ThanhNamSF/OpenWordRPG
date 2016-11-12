@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour
 		get {
 			return _inventory;
 		}
+		set {
+			_inventory = value;
+		}
 	}
 
 	private Item _InHand;
@@ -32,7 +35,6 @@ public class PlayerController : MonoBehaviour
 		set {
 			_InHand = value;
 			Destroy (InHandInstance);
-			Debug.Log ("fff");
 			if (value != null) {
 				InHandInstance = Instantiate (value.InstancePrefab.gameObject, Hand.position, Hand.rotation) as GameObject;
 				InHandInstance.transform.parent = Hand;
@@ -84,4 +86,5 @@ public class PlayerController : MonoBehaviour
 			Anim.SetBool ("Running", false);
 		}
 	}
+
 }

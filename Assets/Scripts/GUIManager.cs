@@ -63,12 +63,15 @@ public class GUIManager : MonoBehaviour
 							}
 						} else if (Event.current.button == 1) {
 							if (GameManager.Instance.SelectedChest != null) {
-								GameManager.Instance.SelectedChest.MyItem.Add (GameManager.Instance.currentCharacter.Instance.Inventory [cu]);
-								if (GameManager.Instance.currentCharacter.Instance.InHand == GameManager.Instance.currentCharacter.Instance.Inventory [cu])
-									GameManager.Instance.currentCharacter.Instance.InHand = null;
-								GameManager.Instance.currentCharacter.Instance.Inventory.Remove (GameManager.Instance.currentCharacter.Instance.Inventory [cu]);
+								if (GameManager.Instance.SelectedChest.MyItem.Count < GameManager.Instance.SelectedChest.MaxItems) {
+									GameManager.Instance.SelectedChest.MyItem.Add (GameManager.Instance.currentCharacter.Instance.Inventory [cu]);
+									if (GameManager.Instance.currentCharacter.Instance.InHand == GameManager.Instance.currentCharacter.Instance.Inventory [cu])
+										GameManager.Instance.currentCharacter.Instance.InHand = null;
+									GameManager.Instance.currentCharacter.Instance.Inventory.Remove (GameManager.Instance.currentCharacter.Instance.Inventory [cu]);
+								}
 							}
 						}
+						GameManager.Instance.SelectedChest.UpdateSC ();
 					}
 					cu++;
 				} else {
@@ -89,6 +92,7 @@ public class GUIManager : MonoBehaviour
 					if (GUI.Button (new Rect (ButtonOffset + (ButtonWidth * x), ButtonOffset + (ButtonHeight * y), ButtonWidth, ButtonHeight), GameManager.Instance.SelectedChest.MyItem [c].Name)) {
 						GameManager.Instance.currentCharacter.Instance.Inventory.Add (GameManager.Instance.SelectedChest.MyItem [c]);
 						GameManager.Instance.SelectedChest.MyItem.Remove (GameManager.Instance.SelectedChest.MyItem [c]);
+						GameManager.Instance.SelectedChest.UpdateSC ();
 					}
 					c++;
 				}

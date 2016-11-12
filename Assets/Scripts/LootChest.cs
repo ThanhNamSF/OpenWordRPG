@@ -9,12 +9,6 @@ public class LootChest : MonoBehaviour
 	int ItemCount;
 	List<Item> Items = new List<Item> ();
 
-	public List<Item> MyItem {
-		get {
-			return Items;
-		}
-	}
-
 	public SerilizableChest SChest;
 
 	public int ID;
@@ -27,6 +21,18 @@ public class LootChest : MonoBehaviour
 	public Color ClickColor;
 	Color DefaultColor;
 	bool Selected;
+	public bool HasGenerated;
+
+	public List<Item> MyItem {
+		get {
+			return Items;
+		}
+	}
+
+	public void UpdateSC ()
+	{
+		SChest.MyItems = MyItem;
+	}
 
 
 
@@ -42,6 +48,7 @@ public class LootChest : MonoBehaviour
 		DefaultColor = rd.material.color;
 		SChest = new SerilizableChest (MyItem, ID);
 		SaveManager.Instance.chests.Add (SChest);
+		HasGenerated = true;
 	}
 	
 	// Update is called once per frame
@@ -58,6 +65,15 @@ public class LootChest : MonoBehaviour
 //		if (Items.Count <= 0) {
 //			Destroy (gameObject);
 //		}
+	}
+
+	public void LoadItem (List<string> i)
+	{
+		MyItem.Clear ();
+		foreach (string str in i) {
+			Items.Add (GameManager.Instance.FindItem (str));
+		}
+		UpdateSC ();
 	}
 
 	public void OnMouseOver ()
@@ -90,24 +106,18 @@ public class LootChest : MonoBehaviour
 [System.Serializable]
 public class SerilizableChest
 {
-
-	public SerilizableChest (List<Item> items, int id)
-	{
-		MyItem = items;
-		ID = id;
-	}
-
+	
 	[System.NonSerialized]
 	List<Item> Items = new List<Item> ();
 
-	public List<Item> MyItem {
+	public List<Item> MyItems {
 		get {
 			return Items;
 		}
 		set {
 			Items = value;
 			_MyItemString.Clear ();
-			foreach (Item i in MyItem) {
+			foreach (Item i in MyItems) {
 				Debug.Log (i.Name);
 				_MyItemString.Add (i.Name);
 			}
@@ -115,7 +125,13 @@ public class SerilizableChest
 		}
 	}
 
-	List<string> _MyItemString = new List<string> ();
+	public List<string> _MyItemString = new List<string> ();
 
 	public int ID;
+
+	public SerilizableChest (List<Item> items, int id)
+	{
+		MyItems = items;
+		ID = id;
+	}
 }

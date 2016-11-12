@@ -8,6 +8,10 @@ public class AI : MonoBehaviour
 	public bool DoneHome;
 	public Vector3 MoveVector = Vector3.zero;
 	public bool GeneratedVector;
+	public WayPoint CurWaypoint;
+	public WayPoint LastWaypoint;
+	public Location CurrentLocation;
+	public LocationType CurrentActivity;
 
 	// Use this for initialization
 	void Start ()
@@ -29,15 +33,25 @@ public class AI : MonoBehaviour
 			if (DoneHome) {
 				transform.LookAt (MoveVector);
 				Controller.v = 1;
-				if (Vector3.Distance (transform.position, MoveVector) < 0.2f) {
-					GeneratedVector = false;
+//				if (Vector3.Distance (transform.position, MoveVector) < 0.2f) {
+//					GeneratedVector = false;
+//				}
+				//if (!GeneratedVector) {
+				if (CurrentLocation == null) {
+					CurrentActivity = (LocationType)Random.Range (0, 3);	
+					CurrentLocation = GameManager.Instance.FindLocationOfType (CurrentActivity);
 				}
-				if (!GeneratedVector) {
-					float x = Random.Range (0, 10);
-					float z = Random.Range (0, 10);
-					MoveVector = new Vector3 (x, 0, z);
-					GeneratedVector = true;
+
+				WayPoint wp = PathManager.Instance.FindClosestWaypoint (transform, this);
+				if (CurWaypoint != wp) {
+					LastWaypoint = CurWaypoint;
+					CurWaypoint = wp;
 				}
+				float x = wp.transform.position.x;
+				float z = wp.transform.position.z;
+				MoveVector = new Vector3 (x, 0, z);
+				//GeneratedVector = true;
+				//}
 			}
 		}
 	

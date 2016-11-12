@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
 	public List<Character> Characters = new List<Character> ();
 	public List<Item> AllItem = new List<Item> ();
+	public LootChest[] AllChests;
+	public List<Location> PossibleLocation = new List<Location> ();
 	bool ShowCharView;
 	public int SelectedCharacter;
 	public Character currentCharacter;
@@ -18,6 +20,7 @@ public class GameManager : MonoBehaviour
 	void Awake ()
 	{
 		Instance = this;
+		AllChests = FindObjectsOfType<LootChest> ();
 		foreach (Character c in Characters) {
 			GameObject go = Instantiate (c.PlayerPrefab, c.HomeSpawn.position, c.HomeSpawn.rotation) as GameObject;
 			c.Instance = go.GetComponent<PlayerController> ();
@@ -30,6 +33,15 @@ public class GameManager : MonoBehaviour
 	void Start ()
 	{
 		
+	}
+
+	public LootChest FindLootChestWithID (int id)
+	{
+		foreach (LootChest lc in AllChests) {
+			if (lc.ID == id)
+				return lc;
+		}
+		return null;
 	}
 	
 	// Update is called once per frame
@@ -91,6 +103,24 @@ public class GameManager : MonoBehaviour
 			Camera.main.GetComponent<SmoothFollow> ().target = Characters [SelectedCharacter].Instance.transform;
 		}
 
+	}
+
+	public Item FindItem (string itemName)
+	{
+		foreach (Item i in AllItem) {
+			if (i.Name == itemName)
+				return i;
+		}
+		return null;
+	}
+
+	public Location FindLocationOfType (LocationType i)
+	{
+		foreach (Location l in PossibleLocation) {
+			if (l.Type == i)
+				return l;
+		}
+		return null;	
 	}
 }
 
